@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Lab1</string>
+    <string name="LabMainText">Laboratory #1\nFactorial calculation</string>
+    <string name="enter_value">Enter value:</string>
+    <string name="Hint">provide a number</string>
+    <string name="calculate">Calculate</string>
+    <string name="calculation_in_progress">Calculation in progress..</string>
+    <string name="Error_occurred">Error occurred: </string>
+    <string name="calculation_finished">Result is</string>"
+</resources>
