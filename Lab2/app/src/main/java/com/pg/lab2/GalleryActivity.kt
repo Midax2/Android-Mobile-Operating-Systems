@@ -1,6 +1,5 @@
 package com.pg.lab2
 
-import android.content.Intent
 import android.graphics.Canvas
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -33,13 +32,15 @@ class GalleryActivity : ComponentActivity() {
 
 @Composable
 fun CustomView() {
-    val intent = Intent(LocalContext.current, MainActivity::class.java)
+    val galleryContext = LocalContext.current
+    val intent = (galleryContext as GalleryActivity).intent
     val isColorsChanged = intent.getBooleanExtra("isColorsChanged", false)
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             Painter(context).apply {
                 setColorBasedOnCondition(isColorsChanged)
+                draw(Canvas())
             }
         }
     )
