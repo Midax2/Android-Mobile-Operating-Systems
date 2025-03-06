@@ -7,37 +7,33 @@ import android.view.View
 import android.graphics.Paint
 
 class Painter : View {
-    private var isRedColor = true // Default color state
+    private var isBaseColors = true
     private val paint = Paint()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
-    // Method to update the color dynamically
     fun setColorBasedOnCondition(isRed: Boolean) {
-        isRedColor = isRed
-        invalidate() // Triggers a redraw of the View
+        isBaseColors = isRed
+        invalidate()
     }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        // Set circle color based on the boolean flag
-        if (isRedColor) {
-            paint.setARGB(255, 255, 0, 0) // Red
+        if (isBaseColors) {
+            paint.setARGB(255, 255, 0, 0)
         } else {
-            paint.setARGB(255, 0, 0, 255) // Blue
+            paint.setARGB(255, 0, 0, 255)
         }
 
-        // Draw circle
         canvas.drawCircle(100.0f, (height / 2).toFloat(), 100f, paint)
 
-        // Set rectangle color (optional, you can change based on another condition)
-        if (isRedColor) {
-            paint.setARGB(255, 0, 255, 0) // Green
+        if (isBaseColors) {
+            paint.setARGB(255, 0, 255, 0)
         } else {
-            paint.setARGB(255, 255, 0, 0) // Red
+            paint.setARGB(255, 255, 0, 0)
         }
         canvas.drawRect(
             width.toFloat() / 2, height.toFloat() / 3,
