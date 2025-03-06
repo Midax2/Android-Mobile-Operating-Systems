@@ -1,16 +1,19 @@
 package com.pg.lab2
 
+import android.content.Intent
+import android.graphics.Canvas
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.pg.lab2.ui.theme.Lab2Theme
 
 class GalleryActivity : ComponentActivity() {
@@ -19,11 +22,9 @@ class GalleryActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Lab2Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting2(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Column {
+                    Greeting("Gallery", fontSize = 40.sp)
+                    CustomView()
                 }
             }
         }
@@ -31,10 +32,16 @@ class GalleryActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting2(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
+fun CustomView() {
+    val intent = Intent(LocalContext.current, MainActivity::class.java)
+    val isColorsChanged = intent.getBooleanExtra("isColorsChanged", false)
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+            Painter(context).apply {
+                setColorBasedOnCondition(isColorsChanged)
+            }
+        }
     )
 }
 
@@ -42,6 +49,9 @@ fun Greeting2(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview2() {
     Lab2Theme {
-        Greeting2("Android")
+        Column {
+            Greeting("Gallery", fontSize = 40.sp)
+            CustomView()
+        }
     }
 }

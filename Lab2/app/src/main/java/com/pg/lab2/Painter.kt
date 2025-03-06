@@ -14,8 +14,8 @@ class Painter : View {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
-    fun setColorBasedOnCondition(isRed: Boolean) {
-        isBaseColors = isRed
+    fun setColorBasedOnCondition(isColorChanged: Boolean) {
+        isBaseColors = isColorChanged
         invalidate()
     }
 
