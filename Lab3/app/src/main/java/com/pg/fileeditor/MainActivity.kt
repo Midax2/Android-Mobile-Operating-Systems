@@ -64,7 +64,10 @@ fun EditTextField(
     description: String
 ) {
     Column {
-        Text(text = description, modifier = modifier.fillMaxWidth().padding(bottom = 5.dp))
+        Text(text = description,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(bottom = 5.dp, start = 5.dp))
         TextField(
             modifier = modifier
                 .fillMaxWidth()
