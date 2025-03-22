@@ -92,7 +92,7 @@ fun GreetingPreview() {
             Spacer(modifier = Modifier.height(20.dp))
             EditTextField(text = text, onValueChange = {text = it}, description = "Edit field:")
             Spacer(modifier = Modifier.weight(1.0f))
-            BottomButtons()
+            BottomButtons(title, text)
         }
     }
 }
