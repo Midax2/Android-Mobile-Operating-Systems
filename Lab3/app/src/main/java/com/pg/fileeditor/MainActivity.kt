@@ -7,9 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -32,24 +34,49 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FileEditorTheme {
-                var text by remember { mutableStateOf("") }
-                var title by remember { mutableStateOf("") }
-                Column {
-                    Greeting("Text Editor", fontSize = 40.sp)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    EditTextField(text = title, onValueChange = {title = it},
-                        description = "Title:", height = 50)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    EditTextField(text = text, onValueChange = {text = it}, description = "Edit field:")
-                    Spacer(modifier = Modifier.weight(1.0f))
-                    BottomButtons(
-                        title = title,
-                        text = text,
-                        onTitleChange = { title = it },
-                        onTextChange = { text = it }
-                    )
-                }
+                FileEditorScreen()
             }
+        }
+    }
+}
+
+@Composable
+fun FileEditorScreen() {
+    var text by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf("") }
+    val fileManager = remember { FileManager() }
+
+    Scaffold(
+        bottomBar = {
+            BottomButtons(
+                title = title,
+                text = text,
+                onTitleChange = { title = it },
+                onTextChange = { text = it },
+                fileManager = fileManager
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp)
+        ) {
+            Greeting("Text Editor", fontSize = 40.sp)
+            Spacer(modifier = Modifier.height(20.dp))
+            EditTextField(
+                text = title,
+                onValueChange = { title = it },
+                description = "Title:",
+                height = 50
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            EditTextField(
+                text = text,
+                onValueChange = { text = it },
+                description = "Edit field:"
+            )
         }
     }
 }
@@ -77,10 +104,12 @@ fun EditTextField(
     description: String
 ) {
     Column {
-        Text(text = description,
+        Text(
+            text = description,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(bottom = 5.dp, start = 5.dp))
+                .padding(bottom = 5.dp, start = 5.dp)
+        )
         TextField(
             modifier = modifier
                 .fillMaxWidth()
@@ -95,22 +124,6 @@ fun EditTextField(
 @Composable
 fun GreetingPreview() {
     FileEditorTheme {
-        var text by remember { mutableStateOf("") }
-        var title by remember { mutableStateOf("") }
-        Column {
-            Greeting("Text Editor", fontSize = 40.sp)
-            Spacer(modifier = Modifier.height(20.dp))
-            EditTextField(text = title, onValueChange = {title = it},
-                description = "Title:", height = 50)
-            Spacer(modifier = Modifier.height(20.dp))
-            EditTextField(text = text, onValueChange = {text = it}, description = "Edit field:")
-            Spacer(modifier = Modifier.weight(1.0f))
-            BottomButtons(
-                title = title,
-                text = text,
-                onTitleChange = { title = it },
-                onTextChange = { text = it }
-            )
-        }
+        FileEditorScreen()
     }
 }

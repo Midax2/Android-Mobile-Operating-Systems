@@ -1,11 +1,8 @@
 package com.pg.fileeditor
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Environment
 import android.provider.DocumentsContract
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,10 +14,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,34 +25,21 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BottomButtons(
-    title: String = "",
-    text: String = "",
+    title: String,
+    text: String,
     onTitleChange: (String) -> Unit,
-    onTextChange: (String) -> Unit
+    onTextChange: (String) -> Unit,
+    fileManager: FileManager
 ) {
     val context = LocalContext.current
-    var fileContent by remember { mutableStateOf("") }
-    var selectedFileName by remember { mutableStateOf("") }
-
-    val openFileLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri = result.data?.data
-            if (uri != null) {
-                try {
-                    val content = readTextFromUri(context, uri)
-                    fileContent = content
-                    selectedFileName = getFileName(context, uri) ?: ""
-                    selectedFileName = selectedFileName.substringBeforeLast(".")
-                    onTitleChange(selectedFileName)
-                    onTextChange(fileContent)
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-
-                }
-            }
+    val historyManager = remember { HistoryManager() }
+    val openFileLauncher = fileManager.registerOpenFileLauncher { uri ->
+        if (uri != null) {
+            val content = fileManager.readTextFromUri(context, uri)
+            val fileName = fileManager.getFileName(context, uri) ?: ""
+            onTitleChange(fileName.substringBeforeLast("."))
+            onTextChange(content)
+            historyManager.updateLastOpenedFile(uri, fileManager, context)
         }
     }
 
@@ -76,7 +57,7 @@ fun BottomButtons(
             ActionButton(
                 text = "Save",
                 modifier = Modifier.weight(1f),
-                onClick = { saveFile(title, text) }
+                onClick = { saveFile(context, title, text) }
             )
             ActionButton(
                 text = "Open",
@@ -86,12 +67,15 @@ fun BottomButtons(
                         addCategory(Intent.CATEGORY_OPENABLE)
                         type = "text/plain"
                         putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_DOWNLOADS)
-
                     }
                     openFileLauncher.launch(intent)
                 }
             )
-            ActionButton(text = "History", modifier = Modifier.weight(1f), onClick = { /*TODO*/ })
+            ActionButton(
+                text = "History",
+                modifier = Modifier.weight(1f),
+                onClick = { historyManager.showHistory(context) }
+            )
         }
     }
 }
@@ -113,5 +97,11 @@ fun ActionButton(text: String, modifier: Modifier = Modifier, onClick: () -> Uni
 @Preview(showBackground = true)
 @Composable
 fun BottomButtonsPreview() {
-    BottomButtons(onTitleChange = {}, onTextChange = {})
+    BottomButtons(
+        onTitleChange = {},
+        onTextChange = {},
+        fileManager = FileManager(),
+        title = "",
+        text = ""
+    )
 }
