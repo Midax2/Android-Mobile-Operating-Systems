@@ -32,9 +32,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FileEditorTheme {
+                var text by remember { mutableStateOf("") }
+                var title by remember { mutableStateOf("") }
                 Column {
                     Greeting("Text Editor", fontSize = 40.sp)
-
+                    Spacer(modifier = Modifier.height(20.dp))
+                    EditTextField(text = title, onValueChange = {title = it},
+                        description = "Title:", height = 50)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    EditTextField(text = text, onValueChange = {text = it}, description = "Edit field:")
+                    Spacer(modifier = Modifier.weight(1.0f))
+                    BottomButtons(
+                        title = title,
+                        text = text,
+                        onTitleChange = { title = it },
+                        onTextChange = { text = it }
+                    )
                 }
             }
         }
@@ -92,7 +105,12 @@ fun GreetingPreview() {
             Spacer(modifier = Modifier.height(20.dp))
             EditTextField(text = text, onValueChange = {text = it}, description = "Edit field:")
             Spacer(modifier = Modifier.weight(1.0f))
-            BottomButtons(title, text)
+            BottomButtons(
+                title = title,
+                text = text,
+                onTitleChange = { title = it },
+                onTextChange = { text = it }
+            )
         }
     }
 }
