@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +28,7 @@ import com.pg.service.ui.theme.ServiceTheme
 
 class MainActivity : ComponentActivity(), LifeTimeService.ServiceCallback {
     private lateinit var mService: LifeTimeService
-    private var mBound: Boolean = false
+    private var mBound by mutableStateOf(false)
     private var mTimePassed by mutableIntStateOf(0)
 
     override fun onGetResult(intResult: Int) {
@@ -35,8 +36,7 @@ class MainActivity : ComponentActivity(), LifeTimeService.ServiceCallback {
     }
 
     private val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName,
-                                        service: IBinder
+        override fun onServiceConnected(className: ComponentName, service: IBinder
         ) {
             val binder = service as LifeTimeService.LocalBinder
             mService = binder.getService()
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity(), LifeTimeService.ServiceCallback {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ServiceScreen(serviceConnection, mTimePassed)
+            ServiceScreen(serviceConnection, mTimePassed, mBound)
         }
     }
 }
@@ -74,7 +74,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier, fontSize: TextUnit = 2
 @Composable
 fun ServiceScreen(
         serviceConnection: ServiceConnection,
-        mTimePassed: Int
+        mTimePassed: Int,
+        mBound: Boolean
 ) {
     ServiceTheme {
         Column(
@@ -85,7 +86,12 @@ fun ServiceScreen(
         ) {
             Greeting("Services")
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "Time passed: ${mTimePassed}s")
+            if (mBound) {
+                Text(
+                    text = "Time passed: ${mTimePassed}s",
+                    fontSize = 20.sp
+                )
+            }
             ServiceButton(serviceConnection)
         }
     }

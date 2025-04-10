@@ -30,8 +30,8 @@ fun ServiceButton(serviceConnection: ServiceConnection) {
             } else {
                 buttonText = stringValueById(context, R.string.main_button_text)
                 val intent = Intent(context, LifeTimeService::class.java)
-                context.stopService(intent)
                 context.unbindService(serviceConnection)
+                context.stopService(intent)
             }
         },
         modifier = Modifier.padding(8.dp)
